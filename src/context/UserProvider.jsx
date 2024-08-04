@@ -13,6 +13,8 @@ const UserProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  console.log("Window location", window.location);
+
   if (loading) return null;
 
   return (

@@ -12,6 +12,7 @@ import ProtectedRoute from "./context/ProtectedRoute";
 import Student from "./pages/studentpage";
 
 function App() {
+  console.log(window.location);
   return (
     <UserProvider>
       <Router>
