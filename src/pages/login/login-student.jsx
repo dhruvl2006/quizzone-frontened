@@ -1,18 +1,20 @@
 import { useState, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
+import Loader from "../../components/Loader";
 
 const Loginstudent = () => {
   const [studentemail, setStudentemail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
 
   async function loginstudent(event) {
     event.preventDefault();
-
+    setIsLoading(true);
     const response = await fetch(
       "https://quizzone-backend.onrender.com/studentlogin",
       {
@@ -37,12 +39,12 @@ const Loginstudent = () => {
       localStorage.setItem("studentemail", studentemail);
 
       setUser(true);
-      alert("Login successful");
       navigate("/student");
     } else {
       setError(true);
       return;
     }
+    setIsLoading(false);
   }
 
   return (
@@ -65,6 +67,7 @@ const Loginstudent = () => {
           </div>
           <div className="space-y-6 w-full">
             <h1 className="text-2xl font-bold text-center">Student Login</h1>
+            <div className="px-3">{isLoading && <Loader />}</div>
             <form onSubmit={loginstudent} className="space-y-6 w-full">
               <div>
                 <label

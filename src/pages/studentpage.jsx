@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import Instruction from "../components/Quiz";
 import { useParams } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const Student = () => {
   const [code, setCode] = useState("");
@@ -9,6 +10,7 @@ const Student = () => {
   const [quizError, setQuizError] = useState(false);
   const [emptyError, setEmptyError] = useState(false);
   const [quizDetails, setQuizDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
 
   const username = localStorage.getItem("studentname");
@@ -23,6 +25,8 @@ const Student = () => {
 
   const fetchCode = async () => {
     try {
+      setIsLoading(true);
+      setQuizError(false);
       if (code.length === 0) {
         setEmptyError(true);
         return;
@@ -47,8 +51,10 @@ const Student = () => {
         setQuizError(false);
       } else {
         setQuizError(true);
+        setIsLoading(false);
         throw new Error("Quiz not found");
       }
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -94,6 +100,11 @@ const Student = () => {
                 {emptyError && (
                   <p className="p-2 text-lg text-start text-red-600 font-bold">
                     Please Enter the Code...
+                  </p>
+                )}
+                {isLoading && (
+                  <p className="p-2 text-lg text-start text-gray-500 font-bold">
+                    Fetching...
                   </p>
                 )}
               </div>
