@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Loader from "../Loader";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const SCQ = ({ code }) => {
   const [questions, setQuestions] = useState([]);
@@ -26,9 +27,7 @@ const SCQ = ({ code }) => {
   const getQuestions = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `https://quizzone-backend.onrender.com/quizQuestions/scq/${code}`
-      );
+      const response = await fetch(`${apiUrl}/quizQuestions/scq/${code}`);
       const data = await response.json();
       setQuestions(data.questions);
       setIsLoading(false);
@@ -109,7 +108,7 @@ const SCQ = ({ code }) => {
           const id = questions[editingIndex]?._id;
           if (id) {
             const response = await fetch(
-              `https://quizzone-backend.onrender.com/quizQuestion-update/scq/${id}`,
+              `${apiUrl}/quizQuestion-update/scq/${id}`,
               {
                 method: "PUT",
                 headers: {
@@ -137,16 +136,13 @@ const SCQ = ({ code }) => {
           }
         } else {
           setIsLoading(true);
-          const response = await fetch(
-            "https://quizzone-backend.onrender.com/quiz/questions/scq",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(newQuestion),
-            }
-          );
+          const response = await fetch(`${apiUrl}/quiz/questions/scq`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newQuestion),
+          });
           const data = await response.json();
           if (response.ok) {
             setQuestions([
@@ -204,7 +200,7 @@ const SCQ = ({ code }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `https://quizzone-backend.onrender.com/quizQuestion-delete/scq/${id}`,
+          `${apiUrl}/quizQuestion-delete/scq/${id}`,
           {
             method: "DELETE",
           }

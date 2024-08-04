@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Instruction from "../components/Quiz";
 import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Student = () => {
   const [code, setCode] = useState("");
@@ -33,15 +34,12 @@ const Student = () => {
       }
       setEmptyError(false);
 
-      const response = await fetch(
-        `https://quizzone-backend.onrender.com/getQuiz/${code}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${process.env.BASE_URL}/getQuiz/${code}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const data = await response.json();
       if (data.quiz) {

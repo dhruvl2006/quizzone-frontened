@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Signupstu = () => {
   const [studentname, setStudentname] = useState("");
@@ -16,21 +17,18 @@ const Signupstu = () => {
   async function registerstudent(event) {
     event.preventDefault();
     setIsLoading(true);
-    const response = await fetch(
-      "https://quizzone-backend.onrender.com/studentsignup",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          studentname,
-          studentemail,
-          password,
-          confirmpass,
-        }),
-      }
-    );
+    const response = await fetch(`${apiUrl}/studentsignup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        studentname,
+        studentemail,
+        password,
+        confirmpass,
+      }),
+    });
 
     const data = await response.json();
     if (data.status === "ok") {

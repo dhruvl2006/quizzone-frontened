@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Loader from "../../components/Loader";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Loginstudent = () => {
   const [studentemail, setStudentemail] = useState("");
@@ -15,19 +16,16 @@ const Loginstudent = () => {
   async function loginstudent(event) {
     event.preventDefault();
     setIsLoading(true);
-    const response = await fetch(
-      "https://quizzone-backend.onrender.com/studentlogin",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          studentemail,
-          password,
-        }),
-      }
-    );
+    const response = await fetch(`${apiUrl}/studentlogin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        studentemail,
+        password,
+      }),
+    });
     const data = await response.json();
     if (data.status === "ok") {
       const student = data.user;

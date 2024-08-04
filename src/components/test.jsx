@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./test_css.css";
 import { useNavigate } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Test = ({ testcode, time, home }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -26,9 +27,7 @@ const Test = ({ testcode, time, home }) => {
 
   const getQuestions = async () => {
     try {
-      const response = await fetch(
-        `https://quizzone-backend.onrender.com/questions/${testcode}`
-      );
+      const response = await fetch(`${apiUrl}/questions/${testcode}`);
       const data = await response.json();
       setQuestions(data.questions);
     } catch (error) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Dashboard = () => {
   const [quizTitle, setQuizTitle] = useState("");
@@ -27,18 +28,15 @@ const Dashboard = () => {
 
   const getQuizzes = async () => {
     setLoading(true);
-    const response = await fetch(
-      "https://quizzone-backend.onrender.com/quizes",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      }
-    );
+    const response = await fetch(`${apiUrl}/quizes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    });
     const data = await response.json();
     setQuizzes(data.quiz);
     setLoading(false);
@@ -56,22 +54,19 @@ const Dashboard = () => {
 
   const handleEdit = async () => {
     setLoading(true);
-    const response = await fetch(
-      "https://quizzone-backend.onrender.com/quiz-data-update",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          _id: editingQuiz._id,
-          quizTitle,
-          quizDescription,
-          questionTime,
-          code,
-        }),
-      }
-    );
+    const response = await fetch(`${apiUrl}/quiz-data-update`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        _id: editingQuiz._id,
+        quizTitle,
+        quizDescription,
+        questionTime,
+        code,
+      }),
+    });
 
     const data = await response.json();
     if (data.status === "ok") {
@@ -86,16 +81,13 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     setLoading(true);
     try {
-      const response = await fetch(
-        "https://quizzone-backend.onrender.com/quiz-data-delete",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id }),
-        }
-      );
+      const response = await fetch(`${apiUrl}/quiz-data-delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
 
       const data = await response.json();
       if (data.status === "ok") {
@@ -125,22 +117,19 @@ const Dashboard = () => {
 
   const handleAddQuiz = async () => {
     setLoading(true);
-    const response = await fetch(
-      "https://quizzone-backend.onrender.com/quiz-data",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          quizTitle,
-          quizDescription,
-          questionTime,
-          code,
-          email,
-        }),
-      }
-    );
+    const response = await fetch(`${apiUrl}/quiz-data`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        quizTitle,
+        quizDescription,
+        questionTime,
+        code,
+        email,
+      }),
+    });
 
     const data = await response.json();
     if (data.status === "code already in use") {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/navbar";
 import SCQ from "../components/questiontype/SCQ";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Quiz = () => {
   const [questionTime, setQuestionTime] = useState("");
@@ -16,15 +17,12 @@ const Quiz = () => {
   useEffect(() => {
     const fetchCode = async () => {
       try {
-        const response = await fetch(
-          `https://quizzone-backend.onrender.com/quiz/${id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`${apiUrl}/quiz/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Network response was not ok");

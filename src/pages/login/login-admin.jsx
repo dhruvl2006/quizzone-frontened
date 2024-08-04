@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Loader from "../../components/Loader";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Loginadmin = () => {
   const [adminemail, setAdminemail] = useState("");
@@ -15,19 +16,16 @@ const Loginadmin = () => {
   async function loginadmin(event) {
     event.preventDefault();
     setIsLoading(true);
-    const response = await fetch(
-      "https://quizzone-backend.onrender.com/adminlogin",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          adminemail,
-          password,
-        }),
-      }
-    );
+    const response = await fetch(`${apiUrl}/adminlogin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        adminemail,
+        password,
+      }),
+    });
 
     const data = await response.json();
 
