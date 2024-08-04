@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const Dashboard = () => {
   const [quizTitle, setQuizTitle] = useState("");
@@ -14,6 +15,7 @@ const Dashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingQuiz, setEditingQuiz] = useState(null);
   const [isCodeNew, setIsCodeNew] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const email = localStorage.getItem("useremail");
 
@@ -24,6 +26,7 @@ const Dashboard = () => {
   const name = localStorage.getItem("username");
 
   const getQuizzes = async () => {
+    setLoading(true);
     const response = await fetch(
       "https://quizzone-backend.onrender.com/quizes",
       {
@@ -39,6 +42,7 @@ const Dashboard = () => {
     const data = await response.json();
     console.log(data.quiz);
     setQuizzes(data.quiz);
+    setLoading(false);
   };
 
   const saveToLocalStorage = (updatedQuizzes) => {
@@ -52,6 +56,7 @@ const Dashboard = () => {
   };
 
   const handleEdit = async () => {
+    setLoading(true);
     const response = await fetch(
       "https://quizzone-backend.onrender.com/quiz-data-update",
       {
@@ -76,9 +81,11 @@ const Dashboard = () => {
       setIsEditing(false);
       setEditingQuiz(null);
     }
+    setLoading(false);
   };
 
   const handleDelete = async (id) => {
+    setLoading(true);
     try {
       const response = await fetch(
         "https://quizzone-backend.onrender.com/quiz-data-delete",
@@ -100,6 +107,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error(error);
     }
+    setLoading(false);
   };
 
   const handleSubmit = (e) => {
@@ -117,6 +125,7 @@ const Dashboard = () => {
   };
 
   const handleAddQuiz = async () => {
+    setLoading(true);
     const response = await fetch(
       "https://quizzone-backend.onrender.com/quiz-data",
       {
@@ -135,6 +144,9 @@ const Dashboard = () => {
     );
 
     const data = await response.json();
+    if (data.status === "code already in use") {
+      setIsCodeNew(true);
+    }
     if (data.message === "Quiz added") {
       getQuizzes();
       setQuizTitle("");
@@ -144,6 +156,7 @@ const Dashboard = () => {
       setError(false);
       setCreateQuiz(false);
     }
+    setLoading(false);
   };
 
   const handleMouseEnter = (index) => {
@@ -166,113 +179,129 @@ const Dashboard = () => {
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       <Navbar />
-      <div className="w-full max-w-7xl mx-auto flex justify-between items-center py-6 px-8 bg-white shadow-lg rounded-md border border-gray-300">
-        <div className="text-gray-800 text-xl min-[400px]:text-2xl font-bold">
-          <h1>Hey, {name}</h1>
+      {loading && (
+        <div className="flex items-center justify-center h-screen">
+          <div className="loader flex space-x-2">
+            <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce"></div>
+            <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce delay-150"></div>
+            <div className="w-4 h-4 bg-blue-500 rounded-full animate-bounce delay-300"></div>
+          </div>
         </div>
-        <button
-          onClick={() => {
-            setCreateQuiz(true);
-            setQuizTitle("");
-            setQuizDescription("");
-            setQuestionTime("");
-            setCode("");
-            setIsEditing(false);
-          }}
-          className="flex items-center gap-2 bg-indigo-600 text-white p-3 sm:py-2 sm:px-4 rounded-full sm:rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-300"
-        >
-          <img src="../assets/add.svg" alt="Add" className="w-5 h-5" />
-          <p className="hidden sm:block">Add Quiz</p>
-        </button>
-      </div>
-      <hr className="my-4 mx-auto w-full max-w-7xl border-gray-300" />
-      <div className="p-6 flex flex-wrap gap-6 max-w-7xl mx-auto overflow-auto w-full">
-        {quizzes.length === 0 && (
-          <div className="w-full flex flex-col items-center gap-4">
-            <img
-              src="../assets/noquiz.svg"
-              alt="No Quiz"
-              className="w-32 h-32"
-            />
-            <h1 className="text-xl font-bold text-gray-700">
-              No Quiz to display...!
-            </h1>
+      )}
+      {!loading && (
+        <>
+          <div className="w-full max-w-7xl mx-auto flex justify-between items-center py-6 px-8 bg-white shadow-lg rounded-md border border-gray-300">
+            <div className="text-gray-800 text-xl min-[400px]:text-2xl font-bold">
+              <h1>Hey, {name}</h1>
+            </div>
             <button
-              onClick={() => setCreateQuiz(true)}
-              className="bg-indigo-500 text-white text-xl px-6 py-2 rounded-lg hover:bg-indigo-600 transition-colors duration-300"
+              onClick={() => {
+                setCreateQuiz(true);
+                setQuizTitle("");
+                setQuizDescription("");
+                setQuestionTime("");
+                setCode("");
+                setIsEditing(false);
+              }}
+              className="flex items-center gap-2 bg-indigo-600 text-white p-3 sm:py-2 sm:px-4 rounded-full sm:rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-300"
             >
-              Create one
+              <img src="../assets/add.svg" alt="Add" className="w-5 h-5" />
+              <p className="hidden sm:block">Add Quiz</p>
             </button>
           </div>
-        )}
-        {quizzes.map((item, index) => (
-          <div
-            key={item._id}
-            className="bg-white rounded-lg shadow-md w-full border border-gray-200 hover:shadow-xl transition-shadow duration-300"
-          >
-            <p className="font-semibold text-lg flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50">
-              Test Code: {item.code}
-            </p>
-            <div className="p-4">
-              <div onClick={() => handleNavigation(item.code)} className="mb-4">
-                <h1 className="text-xl font-semibold">
-                  {item.quizTitle.length > 20
-                    ? item.quizTitle.substring(0, 20) + "..."
-                    : item.quizTitle}
+          <hr className="my-4 mx-auto w-full max-w-7xl border-gray-300" />
+          <div className="p-6 flex flex-wrap gap-6 max-w-7xl mx-auto overflow-auto w-full">
+            {quizzes.length === 0 && (
+              <div className="w-full flex flex-col items-center gap-4">
+                <img
+                  src="../assets/energy-icon.gif"
+                  alt="No Quiz"
+                  className="w-[40%]"
+                />
+                <h1 className="text-xl font-bold text-gray-700">
+                  No Quiz to display...!
                 </h1>
-                <p className="text-gray-600">
-                  {item.quizDescription.length > 60
-                    ? item.quizDescription.substring(0, 60) + "..."
-                    : item.quizDescription}
+                <button
+                  onClick={() => setCreateQuiz(true)}
+                  className="bg-indigo-500 text-white text-xl px-6 py-2 rounded-lg hover:bg-indigo-600 transition-colors duration-300"
+                >
+                  Create one
+                </button>
+              </div>
+            )}
+            {quizzes.map((item, index) => (
+              <div
+                key={item._id}
+                className="bg-white rounded-lg shadow-md w-full border border-gray-200 hover:shadow-xl transition-shadow duration-300"
+              >
+                <p className="font-semibold text-lg flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50">
+                  Test Code: {item.code}
                 </p>
+                <div className="p-4">
+                  <div
+                    onClick={() => handleNavigation(item.code)}
+                    className="mb-4"
+                  >
+                    <h1 className="text-xl font-semibold">
+                      {item.quizTitle.length > 20
+                        ? item.quizTitle.substring(0, 20) + "..."
+                        : item.quizTitle}
+                    </h1>
+                    <p className="text-gray-600">
+                      {item.quizDescription.length > 60
+                        ? item.quizDescription.substring(0, 60) + "..."
+                        : item.quizDescription}
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      className="bg-orange-500 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition-colors duration-300"
+                      onClick={() => handleNavigation(item.code)}
+                    >
+                      <img
+                        src="../assets/view.svg"
+                        alt="View"
+                        className="w-5 h-5"
+                      />
+                      <p className="sm:block hidden">View</p>
+                    </button>
+                    <button
+                      className="bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300"
+                      onClick={() => {
+                        setIsEditing(true);
+                        setCreateQuiz(true);
+                        setEditingQuiz(item);
+                        setQuizTitle(item.quizTitle);
+                        setQuizDescription(item.quizDescription);
+                        setQuestionTime(item.questionTime);
+                        setCode(item.code);
+                      }}
+                    >
+                      <img
+                        src="../assets/edit.svg"
+                        alt="Edit"
+                        className="w-5 h-5"
+                      />
+                      <p className="sm:block hidden">Edit</p>
+                    </button>
+                    <button
+                      onClick={() => confirmDelete(item._id)}
+                      className="bg-red-500 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-red-600 transition-colors duration-300"
+                    >
+                      <img
+                        src="../assets/delete.svg"
+                        alt="Delete"
+                        className="w-5 h-5"
+                      />
+                      <p className="sm:block hidden">Delete</p>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <button
-                  className="bg-orange-500 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition-colors duration-300"
-                  onClick={() => handleNavigation(item.code)}
-                >
-                  <img
-                    src="../assets/view.svg"
-                    alt="View"
-                    className="w-5 h-5"
-                  />
-                  <p className="sm:block hidden">View</p>
-                </button>
-                <button
-                  className="bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-600 transition-colors duration-300"
-                  onClick={() => {
-                    setIsEditing(true);
-                    setCreateQuiz(true);
-                    setEditingQuiz(item);
-                    setQuizTitle(item.quizTitle);
-                    setQuizDescription(item.quizDescription);
-                    setQuestionTime(item.questionTime);
-                    setCode(item.code);
-                  }}
-                >
-                  <img
-                    src="../assets/edit.svg"
-                    alt="Edit"
-                    className="w-5 h-5"
-                  />
-                  <p className="sm:block hidden">Edit</p>
-                </button>
-                <button
-                  onClick={() => confirmDelete(item._id)}
-                  className="bg-red-500 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-red-600 transition-colors duration-300"
-                >
-                  <img
-                    src="../assets/delete.svg"
-                    alt="Delete"
-                    className="w-5 h-5"
-                  />
-                  <p className="sm:block hidden">Delete</p>
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
       {createQuiz && (
         <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
           <form

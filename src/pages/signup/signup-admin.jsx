@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
 
 const Signupadmin = () => {
   const [adminname, setAdminname] = useState("");
@@ -9,11 +10,12 @@ const Signupadmin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   async function registeradmin(event) {
     event.preventDefault();
-
+    setIsLoading(true);
     const response = await fetch(
       "https://quizzone-backend.onrender.com/adminsignup",
       {
@@ -40,6 +42,7 @@ const Signupadmin = () => {
     } else {
       setError(false);
     }
+    setIsLoading(false);
   }
 
   return (
@@ -63,6 +66,7 @@ const Signupadmin = () => {
           <h1 className="text-2xl font-bold text-center mb-6">
             Admin Registration
           </h1>
+          <div className="px-3">{isLoading && <Loader />}</div>
           <form onSubmit={registeradmin} className="space-y-6 w-full">
             <div>
               <label

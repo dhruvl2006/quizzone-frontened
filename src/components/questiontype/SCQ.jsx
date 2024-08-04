@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Loader from "../Loader";
 
 const SCQ = ({ code }) => {
   const [questions, setQuestions] = useState([]);
@@ -16,6 +17,7 @@ const SCQ = ({ code }) => {
   const [markedAnswer, setMarkedAnswer] = useState(false);
   const [isQuestion, setIsQuestion] = useState(false);
   const [valueError, setValueError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getQuestions();
@@ -23,11 +25,13 @@ const SCQ = ({ code }) => {
 
   const getQuestions = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `https://quizzone-backend.onrender.com/quizQuestions/scq/${code}`
       );
       const data = await response.json();
       setQuestions(data.questions);
+      setIsLoading(false);
     } catch (error) {
       console.error("Failed to fetch questions:", error);
     }
@@ -40,6 +44,7 @@ const SCQ = ({ code }) => {
     setMarkedAnswer(false);
     setIsQuestion(false);
     setValueError(false);
+    setIsLoading(false);
   };
 
   const handleOptionChange = (index, value) => {
@@ -131,6 +136,7 @@ const SCQ = ({ code }) => {
             setOptions([]);
           }
         } else {
+          setIsLoading(true);
           const response = await fetch(
             "https://quizzone-backend.onrender.com/quiz/questions/scq",
             {
@@ -154,16 +160,20 @@ const SCQ = ({ code }) => {
               answer: "",
               code: code,
             });
+            setIsLoading(false);
             setOptions([]);
           } else if (data.message === "Duplicate Key Error") {
             setIsQuestion(true);
             setValueError(false);
+            setIsLoading(false);
           } else if (data.message === "Validation Error") {
             setValueError(true);
             setIsQuestion(false);
+            setIsLoading(false);
           } else {
             setIsQuestion(false);
             setValueError(false);
+            setIsLoading(false);
             console.error("Failed to add question:", data.error);
           }
         }
@@ -191,6 +201,7 @@ const SCQ = ({ code }) => {
   const handleDelete = async (index) => {
     const id = questions[index]?._id;
     if (id) {
+      setIsLoading(true);
       try {
         const response = await fetch(
           `https://quizzone-backend.onrender.com/quizQuestion-delete/scq/${id}`,
@@ -205,6 +216,7 @@ const SCQ = ({ code }) => {
           );
           setQuestions(updatedQuestions);
         }
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to delete question:", error);
       }
@@ -298,7 +310,12 @@ const SCQ = ({ code }) => {
         </div>
       </form>
       <h2 className="text-xl font-bold mb-4 text-gray-800">Questions:</h2>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {isLoading && <Loader />}
+      <div
+        className={`${
+          isLoading ? "hidden" : "grid"
+        } gap-4 md:grid-cols-2 lg:grid-cols-3`}
+      >
         {questions.map((item, index) => (
           <div key={index} className="bg-white shadow-md rounded-lg p-4">
             <div className="flex flex-col h-full">

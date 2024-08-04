@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import UserContext from "../../context/UserContext";
+import Loader from "../../components/Loader";
 
 const Loginadmin = () => {
   const [adminemail, setAdminemail] = useState("");
@@ -8,11 +9,12 @@ const Loginadmin = () => {
   const [error, setError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useContext(UserContext);
 
   async function loginadmin(event) {
     event.preventDefault();
-
+    setIsLoading(true);
     const response = await fetch(
       "https://quizzone-backend.onrender.com/adminlogin",
       {
@@ -40,11 +42,11 @@ const Loginadmin = () => {
       localStorage.setItem("useremail", useremail);
 
       setUser(true);
-      alert("Login successful");
       navigate("/dashboard");
     } else {
       setError(true);
     }
+    setIsLoading(false);
   }
 
   return (
@@ -67,6 +69,7 @@ const Loginadmin = () => {
           </div>
           <div className="space-y-6 w-full">
             <h1 className="text-2xl font-bold text-center">Admin Login</h1>
+            <div className="px-3">{isLoading && <Loader />}</div>
             <form onSubmit={loginadmin} className="space-y-6 w-full">
               <div>
                 <label
