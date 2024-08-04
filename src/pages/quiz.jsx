@@ -17,7 +17,7 @@ const Quiz = () => {
     const fetchCode = async () => {
       try {
         const response = await fetch(
-          `https://quizzone-4ydv.onrender.com/quiz/${id}`,
+          `https://quizzone-backend.onrender.com/quiz/${id}`,
           {
             method: "GET",
             headers: {

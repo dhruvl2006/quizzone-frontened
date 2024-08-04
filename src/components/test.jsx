@@ -27,7 +27,7 @@ const Test = ({ testcode, time, home }) => {
   const getQuestions = async () => {
     try {
       const response = await fetch(
-        `https://quizzone-4ydv.onrender.com/questions/${testcode}`
+        `https://quizzone-backend.onrender.com/questions/${testcode}`
       );
       const data = await response.json();
       setQuestions(data.questions);

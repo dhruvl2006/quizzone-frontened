@@ -30,7 +30,7 @@ const Student = () => {
       setEmptyError(false);
 
       const response = await fetch(
-        `https://quizzone-4ydv.onrender.com/getQuiz/${code}`,
+        `https://quizzone-backend.onrender.com/getQuiz/${code}`,
         {
           method: "GET",
           headers: {

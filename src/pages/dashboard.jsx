@@ -24,15 +24,18 @@ const Dashboard = () => {
   const name = localStorage.getItem("username");
 
   const getQuizzes = async () => {
-    const response = await fetch("https://quizzone-4ydv.onrender.com/quizes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-      }),
-    });
+    const response = await fetch(
+      "https://quizzone-backend.onrender.com/quizes",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      }
+    );
     const data = await response.json();
     console.log(data.quiz);
     setQuizzes(data.quiz);
@@ -50,7 +53,7 @@ const Dashboard = () => {
 
   const handleEdit = async () => {
     const response = await fetch(
-      "https://quizzone-4ydv.onrender.com/quiz-data-update",
+      "https://quizzone-backend.onrender.com/quiz-data-update",
       {
         method: "PATCH",
         headers: {
@@ -78,7 +81,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     try {
       const response = await fetch(
-        "https://quizzone-4ydv.onrender.com/quiz-data-delete",
+        "https://quizzone-backend.onrender.com/quiz-data-delete",
         {
           method: "DELETE",
           headers: {
@@ -115,7 +118,7 @@ const Dashboard = () => {
 
   const handleAddQuiz = async () => {
     const response = await fetch(
-      "https://quizzone-4ydv.onrender.com/quiz-data",
+      "https://quizzone-backend.onrender.com/quiz-data",
       {
         method: "POST",
         headers: {

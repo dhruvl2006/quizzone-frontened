@@ -15,7 +15,7 @@ const Signupstu = () => {
     event.preventDefault();
 
     const response = await fetch(
-      "https://quizzone-4ydv.onrender.com/studentsignup",
+      "https://quizzone-backend.onrender.com/studentsignup",
       {
         method: "POST",
         headers: {

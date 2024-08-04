@@ -24,7 +24,7 @@ const SCQ = ({ code }) => {
   const getQuestions = async () => {
     try {
       const response = await fetch(
-        `https://quizzone-4ydv.onrender.com/quizQuestions/scq/${code}`
+        `https://quizzone-backend.onrender.com/quizQuestions/scq/${code}`
       );
       const data = await response.json();
       setQuestions(data.questions);
@@ -104,7 +104,7 @@ const SCQ = ({ code }) => {
           const id = questions[editingIndex]?._id;
           if (id) {
             const response = await fetch(
-              `https://quizzone-4ydv.onrender.com/quizQuestion-update/scq/${id}`,
+              `https://quizzone-backend.onrender.com/quizQuestion-update/scq/${id}`,
               {
                 method: "PUT",
                 headers: {
@@ -132,7 +132,7 @@ const SCQ = ({ code }) => {
           }
         } else {
           const response = await fetch(
-            "https://quizzone-4ydv.onrender.com/quiz/questions/scq",
+            "https://quizzone-backend.onrender.com/quiz/questions/scq",
             {
               method: "POST",
               headers: {
@@ -193,7 +193,7 @@ const SCQ = ({ code }) => {
     if (id) {
       try {
         const response = await fetch(
-          `https://quizzone-4ydv.onrender.com/quizQuestion-delete/scq/${id}`,
+          `https://quizzone-backend.onrender.com/quizQuestion-delete/scq/${id}`,
           {
             method: "DELETE",
           }

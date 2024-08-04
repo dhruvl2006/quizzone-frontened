@@ -14,7 +14,7 @@ const Loginstudent = () => {
     event.preventDefault();
 
     const response = await fetch(
-      "https://quizzone-4ydv.onrender.com/studentlogin",
+      "https://quizzone-backend.onrender.com/studentlogin",
       {
         method: "POST",
         headers: {

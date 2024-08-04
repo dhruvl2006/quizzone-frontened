@@ -14,7 +14,7 @@ const Loginadmin = () => {
     event.preventDefault();
 
     const response = await fetch(
-      "https://quizzone-4ydv.onrender.com/adminlogin",
+      "https://quizzone-backend.onrender.com/adminlogin",
       {
         method: "POST",
         headers: {
