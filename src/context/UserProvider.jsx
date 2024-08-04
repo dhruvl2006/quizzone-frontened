@@ -7,7 +7,8 @@ const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    const student = localStorage.getItem("student");
+    if (token || student) {
       setUser(true);
     }
     setLoading(false);
