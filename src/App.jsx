@@ -19,20 +19,18 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/login/adminlogin" element={<Loginadmin />} />
           <Route path="/login/studentlogin" element={<Loginstudent />} />
-          <Route path="/student" element={<Student />} />
           <Route path="/signup/adminsignup" element={<Signupadmin />} />
           <Route path="/signup/studentsignup" element={<Signupstu />} />
-
+          <Route
+            path="/student"
+            element={<ProtectedRoute element={Student} />}
+          />
           <Route
             path="/dashboard"
             element={<ProtectedRoute element={Dashboard} />}
           />
           <Route path="/quiz/:id" element={<ProtectedRoute element={Quiz} />} />
           <Route path="/help" element={<ProtectedRoute element={Help} />} />
-          <Route
-            path="/student"
-            element={<ProtectedRoute element={Student} />}
-          />
         </Routes>
       </Router>
     </UserProvider>
