@@ -47,13 +47,6 @@ const Test = ({ testcode, time, home }) => {
       setScore((prevScore) => prevScore + 1);
     }
 
-    console.log("Submitted Option Index:", selectedOptionIndex);
-    console.log(
-      "Correct Answer Index:",
-      questions[currentQuestionIndex]?.answer
-    );
-    console.log("Current Score:", score);
-
     if (currentQuestionIndex < questions.length - 1) {
       setFade(true);
       setTimeout(() => {

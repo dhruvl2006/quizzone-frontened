@@ -18,7 +18,6 @@ const Instruction = ({
   };
 
   useEffect(() => {
-    console.log(testcode);
     setTest(false);
   }, []);
 

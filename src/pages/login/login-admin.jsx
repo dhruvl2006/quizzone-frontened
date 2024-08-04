@@ -30,7 +30,6 @@ const Loginadmin = () => {
     );
 
     const data = await response.json();
-    console.log(data);
 
     if (data.status === "ok") {
       const token = data.user;
