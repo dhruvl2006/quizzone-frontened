@@ -42,6 +42,7 @@ const Loginstudent = () => {
       navigate("/student");
     } else {
       setError(true);
+      setIsLoading(false);
       return;
     }
     setIsLoading(false);

@@ -45,6 +45,7 @@ const Loginadmin = () => {
       navigate("/dashboard");
     } else {
       setError(true);
+      setIsLoading(false);
     }
     setIsLoading(false);
   }
