@@ -34,7 +34,7 @@ const Student = () => {
       }
       setEmptyError(false);
 
-      const response = await fetch(`${process.env.BASE_URL}/getQuiz/${code}`, {
+      const response = await fetch(`${apiUrl}/getQuiz/${code}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
