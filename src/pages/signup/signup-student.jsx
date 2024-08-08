@@ -12,6 +12,7 @@ const Signupstu = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const navigate = useNavigate();
 
   async function registerstudent(event) {
@@ -39,6 +40,12 @@ const Signupstu = () => {
       setError(true);
     } else {
       setError(false);
+    }
+
+    if (data.error === "Passwords do not match") {
+      setPasswordError(true);
+    } else {
+      setPasswordError(false);
     }
     setIsLoading(false);
   }
@@ -95,6 +102,7 @@ const Signupstu = () => {
                 value={studentemail}
                 onChange={(e) => setStudentemail(e.target.value)}
                 placeholder="Enter Email..."
+                pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
                 className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
               />
               {error && (
@@ -117,6 +125,7 @@ const Signupstu = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter Password..."
+                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                   className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 />
                 <button
@@ -160,6 +169,11 @@ const Signupstu = () => {
                   )}
                 </button>
               </div>
+              {passwordError && (
+                <p className="text-md text-start text-red-600 font-bold">
+                  Please check the password
+                </p>
+              )}
             </div>
             <p className="text-sm text-gray-600">
               Already registered?{" "}
