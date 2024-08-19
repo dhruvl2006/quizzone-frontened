@@ -8,6 +8,7 @@ const SCQ = ({ code }) => {
     question: "",
     options: [],
     answer: "",
+    solution: "", // Add solution property
     code: code,
   });
   const [options, setOptions] = useState([]);
@@ -94,6 +95,7 @@ const SCQ = ({ code }) => {
         question: question.question,
         options: options,
         answer: question.answer,
+        solution: question.solution, // Include solution in payload
         code: code,
       };
 
@@ -101,6 +103,7 @@ const SCQ = ({ code }) => {
         question: question.question,
         options: options,
         answer: question.answer,
+        solution: question.solution, // Include solution in update
       };
 
       try {
@@ -130,6 +133,7 @@ const SCQ = ({ code }) => {
               question: "",
               options: [],
               answer: "",
+              solution: "", // Reset solution
               code: code,
             });
             setOptions([]);
@@ -154,6 +158,7 @@ const SCQ = ({ code }) => {
               question: "",
               options: [],
               answer: "",
+              solution: "", // Reset solution
               code: code,
             });
             setIsLoading(false);
@@ -289,6 +294,19 @@ const SCQ = ({ code }) => {
             Option can't be empty
           </p>
         )}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Solution:
+          </label>
+          <textarea
+            onChange={(e) =>
+              setQuestion({ ...question, solution: e.target.value })
+            }
+            value={question.solution}
+            className="appearance-none border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Enter solution or explanation here"
+          />
+        </div>
         <div className="flex flex-col sm:flex-row gap-4 mb-4 w-fit sm:w-full">
           <button
             type="button"
@@ -329,6 +347,9 @@ const SCQ = ({ code }) => {
                 </div>
                 <p className="text-md font-semibold mb-2">
                   Correct Answer: {item.answer + 1}
+                </p>
+                <p className="text-md font-semibold mb-2">
+                  Solution: {item.solution || "No solution provided"}
                 </p>
               </div>
               <div className="flex gap-2 mt-auto">

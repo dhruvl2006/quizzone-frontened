@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/navbar";
 import SCQ from "../components/questiontype/SCQ";
+import Loader from "../components/Loader";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Quiz = () => {
@@ -53,8 +54,8 @@ const Quiz = () => {
       <Navbar />
       <div className="flex flex-col items-center w-full max-w-6xl mx-auto p-6">
         {loading && (
-          <div className="text-center text-xl font-semibold text-gray-700 mt-20">
-            Loading...
+          <div className="mt-20">
+            <Loader />
           </div>
         )}
         {error && (
