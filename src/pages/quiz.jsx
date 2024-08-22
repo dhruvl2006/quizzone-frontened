@@ -52,7 +52,7 @@ const Quiz = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Navbar />
-      <div className="flex flex-col items-center w-full max-w-6xl mx-auto p-6">
+      <div className="flex flex-col items-center w-full max-w-6xl mx-auto min-[500px]:p-6">
         {loading && (
           <div className="mt-20">
             <Loader />
@@ -64,7 +64,7 @@ const Quiz = () => {
           </div>
         )}
         {quizDetails && !loading && !error && (
-          <div className="bg-white rounded-lg shadow-md p-6 w-full">
+          <div className="bg-white rounded-lg shadow-md p-3 min-[500px]:p-6 w-full">
             <h1 className="text-2xl font-bold mb-4">{quizTitle}</h1>
             <p className="text-lg text-gray-700 mb-2">{quizDescription}</p>
             <div className="sm:flex sm:justify-between mb-4">

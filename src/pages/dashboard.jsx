@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [editingQuiz, setEditingQuiz] = useState(null);
   const [isCodeNew, setIsCodeNew] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState(false);
 
   const email = localStorage.getItem("useremail");
 

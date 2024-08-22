@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 const Header = ({ username, email, onLogout }) => {
   return (
     <div className="sticky top-0 w-full bg-white shadow-md border-b border-gray-200 z-50 flex justify-center">
-      <header className="lg:w-2/3 w-full p-4 flex flex-col sm:flex-row gap-5 justify-between items-center">
+      <header className="min-[1300px]:w-2/3 w-full p-4 flex flex-col sm:flex-row gap-5 justify-between items-center">
         <div className="flex items-center">
           <NavLink className="flex items-center gap-2" to="/student">
             <h1 className="text-gray-800 text-2xl font-bold tracking-tight">

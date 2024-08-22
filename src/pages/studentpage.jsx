@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Instruction from "../components/Quiz";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/Loader";
+import GetQuiz from "../components/getquiz.modal";
+
 const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Student = () => {
@@ -12,6 +14,9 @@ const Student = () => {
   const [emptyError, setEmptyError] = useState(false);
   const [quizDetails, setQuizDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [getQuiz, setGetQuiz] = useState(false);
+  const [attempted, setAttempted] = useState(false);
   const { id } = useParams();
 
   const username = localStorage.getItem("studentname");
@@ -30,6 +35,7 @@ const Student = () => {
       setQuizError(false);
       if (code.length === 0) {
         setEmptyError(true);
+        setIsLoading(false);
         return;
       }
       setEmptyError(false);
@@ -43,23 +49,78 @@ const Student = () => {
 
       const data = await response.json();
       if (data.quiz) {
-        setQuizDetails(data.quiz);
-        setCode(data.quiz.code);
-        setOnStart(true);
-        setQuizError(false);
+        const attemptedResponse = await fetch(
+          `${apiUrl}/checkAttempted/${code}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: localStorage.getItem("studentemail"),
+            }),
+          }
+        );
+        if (attemptedResponse.ok) {
+          setAttempted(true);
+        } else {
+          setQuizDetails(data.quiz);
+          setCode(data.quiz.code);
+          setOnStart(true);
+          setQuizError(false);
+          setAttempted(false);
+        }
       } else {
         setQuizError(true);
-        setIsLoading(false);
-        throw new Error("Quiz not found");
+        setAttempted(false);
       }
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      setQuizError(true);
+      setIsLoading(false);
+      setAttempted(false);
     }
   };
 
+  const fetchHistory = async () => {
+    try {
+      setIsLoading(true);
+      const useremail = localStorage.getItem("studentemail");
+      const response = await fetch(`${apiUrl}/getQuizHistory/${useremail}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok && data.quizzes && Array.isArray(data.quizzes)) {
+        setHistory(data.quizzes);
+      } else {
+        setHistory([]);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch history", error);
+      setHistory([]);
+    }
+  };
+
+  const name = localStorage.getItem("studentname");
+
+  const navigate = useNavigate();
+
+  const handleAnalysis = (testcode) => {
+    navigate(`/analysis/${testcode}`);
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
   return (
-    <div>
+    <div className="bg-gray-100 min-h-screen">
       {onStart ? (
         <Instruction
           onStart={onStart}
@@ -70,50 +131,82 @@ const Student = () => {
           questionTime={quizDetails?.questionTime}
         />
       ) : (
-        <div className="bg-gray-200 min-h-screen flex flex-col items-center">
+        <div className="flex flex-col items-center px-4 sm:px-8">
           <Header username={username} email={email} onLogout={handleLogout} />
-          <div className="w-full p-4 flex items-center justify-center">
-            <div className="bg-white p-6 md:p-10 rounded-xl shadow-xl max-w-sm md:max-w-md w-full text-center mt-6 md:mt-10">
-              <h1 className="text-2xl md:text-3xl font-semibold mb-4 text-gray-800">
-                Hey, {username}
-              </h1>
-              <div className="mb-6 md:mb-8">
-                <label className="block text-lg font-medium text-gray-700 mb-3">
-                  Quiz Code
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                  placeholder="Enter your quiz code"
-                  value={code}
-                  onChange={(e) => {
-                    setCode(e.target.value);
-                  }}
-                />
-                {quizError && (
-                  <p className="p-2 text-lg text-start text-red-600 font-bold">
-                    Quiz not found...
-                  </p>
-                )}
-                {emptyError && (
-                  <p className="p-2 text-lg text-start text-red-600 font-bold">
-                    Please Enter the Code...
-                  </p>
-                )}
-                {isLoading && (
-                  <p className="p-2 text-lg text-start text-gray-500 font-bold">
-                    Fetching...
-                  </p>
-                )}
-              </div>
-              <button
-                className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-600 border border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition duration-200"
-                onClick={fetchCode}
-              >
-                Get Quiz
-              </button>
-            </div>
+          <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center py-6 bg-white shadow-lg rounded-md border border-gray-300 px-6 md:px-8">
+            <h1 className="text-gray-800 text-lg sm:text-2xl font-bold">
+              Hey, {name}
+            </h1>
+            <button
+              onClick={() => setGetQuiz(true)}
+              className="mt-4 md:mt-0 flex items-center gap-2 bg-indigo-600 text-white py-2 px-4 rounded-full shadow-md hover:bg-indigo-700 transition-colors duration-300"
+            >
+              <img src="./../assets/quiz.svg" alt="Add" className="w-5 h-5" />
+              <span className="hidden sm:inline">Take Quiz</span>
+            </button>
           </div>
+          {getQuiz && (
+            <GetQuiz
+              fetchCode={fetchCode}
+              quizError={quizError}
+              emptyError={emptyError}
+              isLoading={isLoading}
+              attempted={attempted}
+              code={code}
+              setCode={setCode}
+              setGetQuiz={() => setGetQuiz(false)}
+            />
+          )}
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6 mt-6">
+            Attempted Quiz History
+          </h1>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <div className="w-full">
+              {history.length === 0 ? (
+                <div className="flex justify-center items-center w-full mt-10">
+                  No Quiz Attempted
+                </div>
+              ) : (
+                <div className="w-full max-w-7xl mx-auto mt-10">
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {history.map((quiz, index) => (
+                      <div
+                        key={index}
+                        className="p-5 bg-white border border-slate-300 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:translate-y-1"
+                      >
+                        <h2 className="font-semibold text-xl text-indigo-600 mb-2">
+                          {quiz.quizTitle}
+                        </h2>
+                        <p className="text-gray-600 mb-1">
+                          Date: {new Date(quiz.startDate).toLocaleDateString()}
+                        </p>
+                        <p className="text-gray-600 mb-1">
+                          Score: {quiz.score}/{quiz.questions.length}
+                        </p>
+                        <p className="text-gray-600 mb-1">
+                          Time per question: {quiz.time}s
+                        </p>
+                        <p className="text-gray-600 mb-1">
+                          Quiz Code: {quiz.testcode}
+                        </p>
+                        <p className="text-gray-600 mb-4">
+                          Total Questions: {quiz.questions.length}
+                        </p>
+                        <button
+                          onClick={() => handleAnalysis(quiz.testcode)}
+                          className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300"
+                        >
+                          Review Quiz
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

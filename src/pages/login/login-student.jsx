@@ -11,7 +11,7 @@ const Loginstudent = () => {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
+  const { setStudent } = useContext(UserContext);
 
   async function loginstudent(event) {
     event.preventDefault();
@@ -36,7 +36,7 @@ const Loginstudent = () => {
       localStorage.setItem("studentname", studentname);
       localStorage.setItem("studentemail", studentemail);
 
-      setUser(true);
+      setStudent(true);
       navigate("/student");
     } else {
       setError(true);

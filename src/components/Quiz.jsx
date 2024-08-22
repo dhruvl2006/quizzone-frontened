@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
-import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Test from "./test";
 
 const Instruction = ({
@@ -12,19 +12,35 @@ const Instruction = ({
   questionTime,
 }) => {
   const [test, setTest] = useState(false);
+  const [date, setDate] = useState(null);
   const navigate = useNavigate();
-  const handleNavigation = (testcode) => {
-    navigate(`/test/${testcode}`);
-  };
 
   useEffect(() => {
     setTest(false);
   }, []);
 
+  useEffect(() => {
+    if (date) {
+      console.log("Date updated:", date);
+    }
+  }, [date]);
+
+  const handleStartQuiz = () => {
+    const currentDate = new Date();
+    setDate(currentDate);
+    setTest(true);
+  };
+
   return (
     <div>
-      {test ? (
-        <Test testcode={testcode} time={questionTime} home={onClose} />
+      {test && date ? (
+        <Test
+          testcode={testcode}
+          time={questionTime}
+          home={onClose}
+          quizTitle={quizTitle}
+          startDate={date}
+        />
       ) : (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
           <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 space-y-8">
@@ -51,16 +67,14 @@ const Instruction = ({
             </div>
             <div className="flex justify-between flex-col sm:flex-row gap-5 mt-8 items-center">
               <button
-                onClick={() => {
-                  setTest(true);
-                }}
-                className="bg-indigo-700 w-fit text-white px-8 py-3 rounded-xl hover:bg-indigo-800 transition duration-300 shadow-lg transform hover:-translate-y-1"
+                onClick={handleStartQuiz}
+                className="bg-indigo-700 w-full sm:w-fit text-white px-8 py-3 rounded-xl hover:bg-indigo-800 transition duration-300 shadow-lg transform hover:-translate-y-1"
               >
                 Start Quiz
               </button>
               <button
                 onClick={onClose}
-                className="text-indigo-700 w-fit border border-indigo-700 px-8 py-3 rounded-xl hover:bg-indigo-700 hover:text-white transition duration-300 shadow-lg transform hover:-translate-y-1"
+                className="text-indigo-700 w-full sm:w-fit border border-indigo-700 px-8 py-3 rounded-xl hover:bg-indigo-700 hover:text-white transition duration-300 shadow-lg transform hover:-translate-y-1"
               >
                 Go Back
               </button>

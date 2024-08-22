@@ -11,7 +11,7 @@ const Loginadmin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser } = useContext(UserContext);
+  const { setAdmin } = useContext(UserContext);
 
   async function loginadmin(event) {
     event.preventDefault();
@@ -38,11 +38,12 @@ const Loginadmin = () => {
       localStorage.setItem("username", username);
       localStorage.setItem("useremail", useremail);
 
-      setUser(true);
+      setAdmin(true);
       navigate("/dashboard");
     } else {
       setError(true);
       setIsLoading(false);
+      setAdmin(false);
     }
     setIsLoading(false);
   }

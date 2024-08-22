@@ -10,6 +10,7 @@ import Quiz from "./pages/quiz";
 import UserProvider from "./context/UserProvider";
 import ProtectedRoute from "./context/ProtectedRoute";
 import Student from "./pages/studentpage";
+import Analysis from "./components/analysis";
 
 function App() {
   return (
@@ -24,6 +25,10 @@ function App() {
           <Route
             path="/student"
             element={<ProtectedRoute element={Student} />}
+          />
+          <Route
+            path="/analysis/:id"
+            element={<ProtectedRoute element={Analysis} />}
           />
           <Route
             path="/dashboard"
