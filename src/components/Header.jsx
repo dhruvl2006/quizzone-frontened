@@ -6,7 +6,6 @@ import { jwtDecode } from "jwt-decode";
 const Header = ({ onLogout }) => {
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
-  console.log(decoded);
   const username = decoded.name;
   const email = decoded.email;
   return (

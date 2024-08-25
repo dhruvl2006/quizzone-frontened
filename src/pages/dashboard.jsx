@@ -22,7 +22,6 @@ const Dashboard = () => {
 
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
-  console.log(decoded);
   const name = decoded.name;
   const email = decoded.email;
 

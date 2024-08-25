@@ -9,7 +9,6 @@ const Navbar = () => {
 
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
-  console.log(decoded);
   const name = decoded.name;
   const email = decoded.email;
 

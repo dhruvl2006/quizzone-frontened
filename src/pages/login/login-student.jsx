@@ -30,7 +30,6 @@ const Loginstudent = () => {
       });
 
       const data = await response.json();
-      console.log("API Response:", data);
 
       if (data.status === "ok") {
         localStorage.setItem("student", data.user);
