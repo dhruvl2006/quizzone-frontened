@@ -20,7 +20,7 @@ const Student = () => {
   const [attempted, setAttempted] = useState(false);
   const { id } = useParams();
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("student");
   const decoded = jwtDecode(token);
   const username = decoded.name;
   const email = decoded.email;

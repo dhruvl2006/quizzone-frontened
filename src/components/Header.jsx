@@ -4,7 +4,7 @@ import ThemeToggle from ".././components/toggleTheme";
 import { jwtDecode } from "jwt-decode";
 
 const Header = ({ onLogout }) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("student");
   const decoded = jwtDecode(token);
   const username = decoded.name;
   const email = decoded.email;
