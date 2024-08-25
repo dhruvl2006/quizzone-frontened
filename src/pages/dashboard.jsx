@@ -138,7 +138,7 @@ const Dashboard = () => {
     if (data.status === "code already in use") {
       setIsCodeNew(true);
     }
-    if (data.message === "Quiz added") {
+    if (data.message === "Quiz added successfully") {
       getQuizzes();
       setQuizTitle("");
       setQuizDescription("");
