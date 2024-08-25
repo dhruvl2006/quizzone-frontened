@@ -4,6 +4,7 @@ import Instruction from "../components/Quiz";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../components/Loader";
 import GetQuiz from "../components/getquiz.modal";
+import { jwtDecode } from "jwt-decode";
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 
@@ -19,12 +20,13 @@ const Student = () => {
   const [attempted, setAttempted] = useState(false);
   const { id } = useParams();
 
-  const username = localStorage.getItem("studentname");
-  const email = localStorage.getItem("studentemail");
+  const token = localStorage.getItem("token");
+  const decoded = jwtDecode(token);
+  console.log(decoded);
+  const username = decoded.name;
+  const email = decoded.email;
 
   const handleLogout = () => {
-    localStorage.removeItem("studentname");
-    localStorage.removeItem("studentemail");
     localStorage.removeItem("student");
     window.location.href = "/login/studentlogin";
   };
@@ -57,7 +59,7 @@ const Student = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              email: localStorage.getItem("studentemail"),
+              email: email,
             }),
           }
         );
@@ -86,8 +88,7 @@ const Student = () => {
   const fetchHistory = async () => {
     try {
       setIsLoading(true);
-      const useremail = localStorage.getItem("studentemail");
-      const response = await fetch(`${apiUrl}/getQuizHistory/${useremail}`, {
+      const response = await fetch(`${apiUrl}/getQuizHistory/${email}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +121,7 @@ const Student = () => {
   }, []);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 dark:bg-gray-950 min-h-screen">
       {onStart ? (
         <Instruction
           onStart={onStart}
@@ -129,84 +130,89 @@ const Student = () => {
           quizTitle={quizDetails?.quizTitle}
           quizDescription={quizDetails?.quizDescription}
           questionTime={quizDetails?.questionTime}
+          username={username}
+          email={email}
         />
       ) : (
-        <div className="flex flex-col items-center px-4 sm:px-8">
-          <Header username={username} email={email} onLogout={handleLogout} />
-          <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center py-6 bg-white shadow-lg rounded-md border border-gray-300 px-6 md:px-8">
-            <h1 className="text-gray-800 text-lg sm:text-2xl font-bold">
-              Hey, {name}
-            </h1>
-            <button
-              onClick={() => setGetQuiz(true)}
-              className="mt-4 md:mt-0 flex items-center gap-2 bg-indigo-600 text-white py-2 px-4 rounded-full shadow-md hover:bg-indigo-700 transition-colors duration-300"
-            >
-              <img src="./../assets/quiz.svg" alt="Add" className="w-5 h-5" />
-              <span className="hidden sm:inline">Take Quiz</span>
-            </button>
-          </div>
-          {getQuiz && (
-            <GetQuiz
-              fetchCode={fetchCode}
-              quizError={quizError}
-              emptyError={emptyError}
-              isLoading={isLoading}
-              attempted={attempted}
-              code={code}
-              setCode={setCode}
-              setGetQuiz={() => setGetQuiz(false)}
-            />
-          )}
-          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6 mt-6">
-            Attempted Quiz History
-          </h1>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <div className="w-full">
-              {history.length === 0 ? (
-                <div className="flex justify-center items-center w-full mt-10">
-                  No Quiz Attempted
-                </div>
-              ) : (
-                <div className="w-full max-w-7xl mx-auto mt-10">
-                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {history.map((quiz, index) => (
-                      <div
-                        key={index}
-                        className="p-5 bg-white border border-slate-300 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:translate-y-1"
-                      >
-                        <h2 className="font-semibold text-xl text-indigo-600 mb-2">
-                          {quiz.quizTitle}
-                        </h2>
-                        <p className="text-gray-600 mb-1">
-                          Date: {new Date(quiz.startDate).toLocaleDateString()}
-                        </p>
-                        <p className="text-gray-600 mb-1">
-                          Score: {quiz.score}/{quiz.questions.length}
-                        </p>
-                        <p className="text-gray-600 mb-1">
-                          Time per question: {quiz.time}s
-                        </p>
-                        <p className="text-gray-600 mb-1">
-                          Quiz Code: {quiz.testcode}
-                        </p>
-                        <p className="text-gray-600 mb-4">
-                          Total Questions: {quiz.questions.length}
-                        </p>
-                        <button
-                          onClick={() => handleAnalysis(quiz.testcode)}
-                          className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300"
-                        >
-                          Review Quiz
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+        <div>
+          <Header onLogout={handleLogout} />
+          <div className="flex flex-col items-center px-4 sm:px-8">
+            <div className="w-full max-w-7xl mx-auto flex justify-between items-center py-6 bg-white dark:bg-gray-900 shadow-lg rounded-md border border-gray-300 dark:border-gray-700 px-6 md:px-8">
+              <h1 className="text-gray-800 dark:text-gray-100 text-lg sm:text-2xl font-bold">
+                Hey, {username}
+              </h1>
+              <button
+                onClick={() => setGetQuiz(true)}
+                className="flex items-center gap-2 bg-indigo-600 text-white md:py-2 md:px-4 p-3 rounded-full shadow-md hover:bg-indigo-700 transition-colors duration-300"
+              >
+                <img src="./../assets/quiz.svg" alt="Add" className="w-5 h-5" />
+                <span className="hidden sm:inline">Take Quiz</span>
+              </button>
             </div>
-          )}
+            {getQuiz && (
+              <GetQuiz
+                fetchCode={fetchCode}
+                quizError={quizError}
+                emptyError={emptyError}
+                isLoading={isLoading}
+                attempted={attempted}
+                code={code}
+                setCode={setCode}
+                setGetQuiz={() => setGetQuiz(false)}
+              />
+            )}
+            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-6 mt-6">
+              Attempted Quiz History
+            </h1>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <div className="w-full">
+                {history.length === 0 ? (
+                  <div className="flex justify-center items-center w-full mt-10 text-gray-800 dark:text-gray-100">
+                    No Quiz Attempted
+                  </div>
+                ) : (
+                  <div className="w-full max-w-7xl mx-auto mt-10">
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {history.map((quiz, index) => (
+                        <div
+                          key={index}
+                          className="p-5 bg-white dark:bg-gray-900 border border-slate-300 dark:border-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:translate-y-1"
+                        >
+                          <h2 className="font-semibold text-xl text-indigo-600 dark:text-indigo-400 mb-2">
+                            {quiz.quizTitle}
+                          </h2>
+                          <p className="text-gray-600 dark:text-gray-300 mb-1">
+                            Date:{" "}
+                            {new Date(quiz.startDate).toLocaleDateString()}
+                          </p>
+                          <p className="text-gray-600 dark:text-gray-300 mb-1">
+                            Score: {quiz.score}/{quiz.questions.length}
+                          </p>
+                          <p className="text-gray-600 dark:text-gray-300 mb-1">
+                            Time per question: {quiz.time}s
+                          </p>
+                          <p className="text-gray-600 dark:text-gray-300 mb-1">
+                            Quiz Code: {quiz.testcode}
+                          </p>
+                          <p className="text-gray-600 dark:text-gray-300 mb-4">
+                            Total Questions: {quiz.questions.length}
+                          </p>
+                          <button
+                            onClick={() => handleAnalysis(quiz.testcode)}
+                            className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors duration-300"
+                          >
+                            Review Quiz
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

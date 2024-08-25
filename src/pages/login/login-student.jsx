@@ -1,7 +1,7 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import UserContext from "../../context/UserContext";
 import Loader from "../../components/Loader";
+import ThemeToggle from "../../components/toggleTheme";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Loginstudent = () => {
@@ -11,67 +11,73 @@ const Loginstudent = () => {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setStudent } = useContext(UserContext);
 
   async function loginstudent(event) {
     event.preventDefault();
     setIsLoading(true);
-    const response = await fetch(`${apiUrl}/studentlogin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        studentemail,
-        password,
-      }),
-    });
-    const data = await response.json();
-    if (data.status === "ok") {
-      const student = data.user;
-      const studentname = data.username;
-      const studentemail = data.useremail;
+    setError(false);
 
-      localStorage.setItem("student", student);
-      localStorage.setItem("studentname", studentname);
-      localStorage.setItem("studentemail", studentemail);
+    try {
+      const response = await fetch(`${apiUrl}/studentlogin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentemail,
+          password,
+        }),
+      });
 
-      setStudent(true);
-      navigate("/student");
-    } else {
+      const data = await response.json();
+      console.log("API Response:", data);
+
+      if (data.status === "ok") {
+        localStorage.setItem("student", data.user);
+
+        navigate("/student");
+      } else {
+        setError(true);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
       setError(true);
+    } finally {
       setIsLoading(false);
-      return;
     }
-    setIsLoading(false);
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-indigo-100">
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-gray-950 dark:to-slate-950 transition-colors duration-500">
+      <div className="min-[450px]:absolute min-[450px]:right-0 min-[450px]:top-0 min-[450px]:p-5 fixed top-2 right-2">
+        <ThemeToggle />
+      </div>
       <div className="w-full flex justify-center items-center">
-        <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg min-[450px]:h-fit h-screen flex justify-center items-center flex-col">
-          <div className="flex justify-center space-x-4 border-b pb-4 mb-8">
+        <div className="w-full max-w-md p-8 bg-white dark:bg-gray-900 shadow-lg rounded-lg min-[450px]:h-fit h-screen flex justify-center items-center flex-col">
+          <div className="flex justify-center space-x-4 pb-4 mb-8">
             <NavLink
               to="/login/adminlogin"
-              className="text-lg font-semibold text-gray-600 hover:text-indigo-600"
+              className="text-lg font-semibold text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
             >
               Admin
             </NavLink>
             <NavLink
               to="/login/studentlogin"
-              className="text-lg font-semibold text-indigo-600 border-b-2 border-indigo-600"
+              className="text-lg font-semibold text-indigo-600 dark:text-indigo-400 dark:border-indigo-400 border-b-2 border-indigo-600"
             >
               Student
             </NavLink>
           </div>
           <div className="space-y-6 w-full">
-            <h1 className="text-2xl font-bold text-center">Student Login</h1>
+            <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-200">
+              Student Login
+            </h1>
             <div className="px-3">{isLoading && <Loader />}</div>
             <form onSubmit={loginstudent} className="space-y-6 w-full">
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Email
                 </label>
@@ -83,14 +89,14 @@ const Loginstudent = () => {
                   required
                   value={studentemail}
                   onChange={(e) => setStudentemail(e.target.value)}
-                  className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 p-3 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Enter Email..."
                 />
               </div>
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Password
                 </label>
@@ -103,13 +109,13 @@ const Loginstudent = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 p-3 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Enter Password..."
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 dark:invert"
                   >
                     {showPassword ? (
                       <img src="../assets/hidepass.svg" alt="" />
@@ -124,12 +130,12 @@ const Loginstudent = () => {
                   *Please check your email and password
                 </p>
               )}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between dark:text-gray-100">
                 <div className="text-sm">
                   New to QuizZone?{" "}
                   <NavLink
                     to="/signup/studentsignup"
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                    className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300"
                   >
                     Sign Up as Student
                   </NavLink>
@@ -138,7 +144,7 @@ const Loginstudent = () => {
               <div className="flex items-center justify-between">
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                 >
                   Log In
                 </button>
@@ -147,7 +153,7 @@ const Loginstudent = () => {
                 <NavLink to="/">
                   <button
                     type="button"
-                    className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="w-full flex justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                   >
                     Cancel
                   </button>

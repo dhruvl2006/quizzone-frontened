@@ -7,38 +7,43 @@ import Loginadmin from "./pages/login/login-admin";
 import Signupadmin from "./pages/signup/signup-admin";
 import Signupstu from "./pages/signup/signup-student";
 import Quiz from "./pages/quiz";
-import UserProvider from "./context/UserProvider";
-import ProtectedRoute from "./context/ProtectedRoute";
 import Student from "./pages/studentpage";
 import Analysis from "./components/analysis";
+import ProtectedRouteAdmin from "./context/ProtectedRouteAdmin";
+import ProtectedRouteStudent from "./context/ProtectedRouteStudent";
+import "./main.css";
 
 function App() {
   return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/login/adminlogin" element={<Loginadmin />} />
-          <Route path="/login/studentlogin" element={<Loginstudent />} />
-          <Route path="/signup/adminsignup" element={<Signupadmin />} />
-          <Route path="/signup/studentsignup" element={<Signupstu />} />
-          <Route
-            path="/student"
-            element={<ProtectedRoute element={Student} />}
-          />
-          <Route
-            path="/analysis/:id"
-            element={<ProtectedRoute element={Analysis} />}
-          />
-          <Route
-            path="/dashboard"
-            element={<ProtectedRoute element={Dashboard} />}
-          />
-          <Route path="/quiz/:id" element={<ProtectedRoute element={Quiz} />} />
-          <Route path="/help" element={<ProtectedRoute element={Help} />} />
-        </Routes>
-      </Router>
-    </UserProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/login/adminlogin" element={<Loginadmin />} />
+        <Route path="/login/studentlogin" element={<Loginstudent />} />
+        <Route path="/signup/adminsignup" element={<Signupadmin />} />
+        <Route path="/signup/studentsignup" element={<Signupstu />} />
+        <Route
+          path="/dashboard/*"
+          element={<ProtectedRouteAdmin element={<Dashboard />} />}
+        />
+        <Route
+          path="/quiz/:id"
+          element={<ProtectedRouteAdmin element={<Quiz />} />}
+        />
+        <Route
+          path="/help"
+          element={<ProtectedRouteAdmin element={<Help />} />}
+        />
+        <Route
+          path="/student"
+          element={<ProtectedRouteStudent element={<Student />} />}
+        />
+        <Route
+          path="/analysis/:id"
+          element={<ProtectedRouteStudent element={<Analysis />} />}
+        />
+      </Routes>
+    </Router>
   );
 }
 

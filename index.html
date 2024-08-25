@@ -27,8 +27,24 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #a1a1a1;
       }
+      html.dark {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+      }
+
+      html.dark ::-webkit-scrollbar-track {
+        background: var(--scrollbar-track-dark);
+      }
+
+      html.dark ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb-dark);
+      }
+
+      html.dark ::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover-dark);
+      }
       body {
-        font-family: "Roboto", sans-serif; /* Default body font */
+        font-family: "Roboto", sans-serif;
       }
 
       h1,

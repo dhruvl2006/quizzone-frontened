@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "./test_css.css";
 import { useNavigate } from "react-router-dom";
+import ThemeToggle from "./toggleTheme";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 
-const Test = ({ testcode, time, home, quizTitle, startDate }) => {
+const Test = ({
+  username,
+  email,
+  testcode,
+  time,
+  home,
+  quizTitle,
+  startDate,
+}) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
@@ -69,8 +78,8 @@ const Test = ({ testcode, time, home, quizTitle, startDate }) => {
   const handleParticipant = async () => {
     try {
       const Info = {
-        name: localStorage.getItem("studentname"),
-        email: localStorage.getItem("studentemail"),
+        name: username,
+        email: email,
         score: score,
       };
       await fetch(`${apiUrl}/addParticipants/${testcode}`, {
@@ -96,8 +105,8 @@ const Test = ({ testcode, time, home, quizTitle, startDate }) => {
           score: score,
           testcode: testcode,
           user: {
-            name: localStorage.getItem("studentname"),
-            email: localStorage.getItem("studentemail"),
+            name: username,
+            email: email,
           },
           time: time,
           quizTitle: quizTitle,
@@ -122,18 +131,21 @@ const Test = ({ testcode, time, home, quizTitle, startDate }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-200 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-950 p-4">
+      <div className="min-[450px]:absolute min-[450px]:right-0 min-[450px]:top-0 min-[450px]:p-5 fixed top-2 right-2">
+        <ThemeToggle />
+      </div>
       <div
-        className={`bg-white text-black rounded-lg shadow-2xl p-6 md:p-8 max-w-lg w-full transition-opacity duration-500 ${
+        className={`bg-white dark:bg-gray-900 text-black dark:text-gray-100 rounded-lg shadow-2xl p-6 md:p-8 max-w-lg w-full transition-opacity duration-500 ${
           fade ? "opacity-0" : "opacity-100"
         }`}
       >
         {showResult ? (
-          <div className="flex flex-col justify-center items-center gap-6 w-full p-6 bg-gray-50 rounded-lg">
-            <h2 className="text-3xl font-extrabold text-gray-800 text-center">
+          <div className="flex flex-col justify-center items-center gap-6 w-full p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100 text-center">
               Quiz Result
             </h2>
-            <p className="text-xl font-semibold text-gray-700 text-center">
+            <p className="text-xl font-semibold text-gray-700 dark:text-gray-300 text-center">
               Your score: <span className="text-indigo-600">{score}</span> /{" "}
               {questions.length}
             </p>
@@ -157,23 +169,23 @@ const Test = ({ testcode, time, home, quizTitle, startDate }) => {
           </div>
         ) : questions.length === 0 ? (
           <div className="text-center">
-            <h2 className="text-2xl font-extrabold mb-4">
+            <h2 className="text-2xl font-extrabold mb-4 dark:text-gray-100">
               No questions available for this quiz.
             </h2>
           </div>
         ) : (
           <div>
-            <h2 className="text-2xl font-extrabold mb-4 text-center">
+            <h2 className="text-2xl font-extrabold mb-4 text-center dark:text-gray-100">
               Question {currentQuestionIndex + 1} of {questions.length}
             </h2>
-            <p className="text-lg mb-4 text-center">
+            <p className="text-lg mb-4 text-center dark:text-gray-300">
               {questions[currentQuestionIndex]?.question}
             </p>
             <div className="space-y-3 mb-4">
               {questions[currentQuestionIndex]?.options.map((option, index) => (
                 <label
                   key={index}
-                  className="flex items-center space-x-3 bg-gray-100 p-3 rounded-lg hover:bg-gray-200 cursor-pointer"
+                  className="flex items-center space-x-3 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
                 >
                   <input
                     type="radio"
@@ -183,7 +195,7 @@ const Test = ({ testcode, time, home, quizTitle, startDate }) => {
                     onChange={() => handleOptionChange(index)}
                     className="form-radio h-4 w-4 text-indigo-600 transition duration-300"
                   />
-                  <span className="text-md">{option}</span>
+                  <span className="text-md dark:text-gray-300">{option}</span>
                 </label>
               ))}
             </div>
@@ -194,7 +206,9 @@ const Test = ({ testcode, time, home, quizTitle, startDate }) => {
               >
                 Submit
               </button>
-              <p className="text-xl font-bold">{timeLeft}s</p>
+              <p className="text-xl font-bold dark:text-gray-100">
+                {timeLeft}s
+              </p>
             </div>
           </div>
         )}

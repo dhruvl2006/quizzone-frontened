@@ -1,7 +1,7 @@
-import { useState, useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import UserContext from "../../context/UserContext";
+import { useState } from "react";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import Loader from "../../components/Loader";
+import ThemeToggle from "../../components/toggleTheme";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Loginadmin = () => {
@@ -11,69 +11,71 @@ const Loginadmin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { setAdmin } = useContext(UserContext);
 
-  async function loginadmin(event) {
+  const loginadmin = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    const response = await fetch(`${apiUrl}/adminlogin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        adminemail,
-        password,
-      }),
-    });
 
-    const data = await response.json();
+    try {
+      const response = await fetch(`${apiUrl}/adminlogin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          adminemail,
+          password,
+        }),
+      });
 
-    if (data.status === "ok") {
-      const token = data.user;
-      const username = data.username;
-      const useremail = data.useremail;
+      const data = await response.json();
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("username", username);
-      localStorage.setItem("useremail", useremail);
+      if (data.status === "ok") {
+        const token = data.user;
 
-      setAdmin(true);
-      navigate("/dashboard");
-    } else {
+        localStorage.setItem("token", token);
+        navigate(`/dashboard/`);
+      } else {
+        setError(true);
+      }
+    } catch (err) {
       setError(true);
+    } finally {
       setIsLoading(false);
-      setAdmin(false);
     }
-    setIsLoading(false);
-  }
+  };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-50 to-indigo-100">
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-gray-950 dark:to-slate-950 transition-colors duration-500">
+      <div className="min-[450px]:absolute min-[450px]:right-0 min-[450px]:top-0 min-[450px]:p-5 fixed top-2 right-2">
+        <ThemeToggle />
+      </div>
       <div className="w-full flex justify-center items-center">
-        <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg min-[450px]:h-fit h-screen flex justify-center items-center flex-col">
-          <div className="flex justify-center space-x-4 border-b pb-4 mb-8">
+        <div className="w-full max-w-md p-8 bg-white dark:bg-gray-900 shadow-lg rounded-lg min-[450px]:h-fit h-screen flex justify-center items-center flex-col">
+          <div className="flex justify-center space-x-4 pb-4 mb-8 ">
             <NavLink
               to="/login/adminlogin"
-              className="text-lg font-semibold text-indigo-600 border-b-2 border-indigo-600"
+              className="text-lg font-semibold text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400"
             >
               Admin
             </NavLink>
             <NavLink
               to="/login/studentlogin"
-              className="text-lg font-semibold text-gray-600 hover:text-indigo-600"
+              className="text-lg font-semibold text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
             >
               Student
             </NavLink>
           </div>
           <div className="space-y-6 w-full">
-            <h1 className="text-2xl font-bold text-center">Admin Login</h1>
+            <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-200">
+              Admin Login
+            </h1>
             <div className="px-3">{isLoading && <Loader />}</div>
             <form onSubmit={loginadmin} className="space-y-6 w-full">
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Email
                 </label>
@@ -85,14 +87,14 @@ const Loginadmin = () => {
                   required
                   value={adminemail}
                   onChange={(e) => setAdminemail(e.target.value)}
-                  className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 p-3 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Enter Email..."
                 />
               </div>
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Password
                 </label>
@@ -105,18 +107,18 @@ const Loginadmin = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1 p-3 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 p-3 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Enter Password..."
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 dark:invert"
                   >
                     {showPassword ? (
-                      <img src="../assets/hidepass.svg" alt="" />
+                      <img src="../assets/hidepass.svg" alt="Hide Password" />
                     ) : (
-                      <img src="../assets/showpass.svg" alt="" />
+                      <img src="../assets/showpass.svg" alt="Show Password" />
                     )}
                   </button>
                 </div>
@@ -126,12 +128,12 @@ const Loginadmin = () => {
                   *Please check your email and password
                 </p>
               )}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between dark:text-gray-100">
                 <div className="text-sm">
                   New to QuizZone?{" "}
                   <NavLink
                     to="/signup/adminsignup"
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                    className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300"
                   >
                     Sign Up as Admin
                   </NavLink>
@@ -140,7 +142,7 @@ const Loginadmin = () => {
               <div className="flex items-center justify-between">
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                 >
                   Log In
                 </button>
@@ -149,7 +151,7 @@ const Loginadmin = () => {
                 <NavLink to="/">
                   <button
                     type="button"
-                    className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="w-full flex justify-center py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                   >
                     Cancel
                   </button>

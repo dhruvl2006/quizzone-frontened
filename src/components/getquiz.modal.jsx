@@ -11,15 +11,15 @@ const GetQuiz = ({
   setGetQuiz,
 }) => {
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-30 z-50">
-      <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg w-11/12 max-w-lg">
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-30 z-50">
+      <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-lg shadow-lg w-11/12 max-w-lg">
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-800">
+          <label className="block text-lg font-medium text-gray-800 dark:text-gray-100">
             Enter Quiz Code
           </label>
           <input
             type="text"
-            className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="mt-2 w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
             placeholder="Enter your quiz code"
             value={code}
             onChange={(e) => setCode(e.target.value)}
@@ -33,7 +33,9 @@ const GetQuiz = ({
             </p>
           )}
           {isLoading && (
-            <p className="mt-2 text-gray-600 font-medium">Fetching...</p>
+            <p className="mt-2 text-gray-600 dark:text-gray-400 font-medium">
+              Fetching...
+            </p>
           )}
           {attempted && (
             <p className="mt-2 text-red-600 font-medium">
@@ -43,7 +45,7 @@ const GetQuiz = ({
         </div>
         <div className="flex flex-col md:flex-row gap-4">
           <button
-            className="w-full md:w-auto flex-1 bg-white text-indigo-600 border border-indigo-600 py-3 rounded-lg font-semibold hover:bg-indigo-600 hover:text-white transition duration-200"
+            className="w-full md:w-auto flex-1 bg-white dark:bg-transparent text-indigo-600 dark:text-indigo-400 border border-indigo-600 py-3 rounded-lg font-semibold hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500 dark:hover:text-gray-100 transition duration-200"
             onClick={setGetQuiz}
           >
             Close

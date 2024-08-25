@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { jwtDecode } from "jwt-decode";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 
 const Dashboard = () => {
@@ -19,13 +20,15 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState(false);
 
-  const email = localStorage.getItem("useremail");
+  const token = localStorage.getItem("token");
+  const decoded = jwtDecode(token);
+  console.log(decoded);
+  const name = decoded.name;
+  const email = decoded.email;
 
   useEffect(() => {
     getQuizzes();
   }, []);
-
-  const name = localStorage.getItem("username");
 
   const getQuizzes = async () => {
     setLoading(true);
@@ -82,12 +85,11 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/quiz-data-delete`, {
+      const response = await fetch(`${apiUrl}/quiz-data-delete/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id }),
       });
 
       const data = await response.json();
@@ -166,17 +168,17 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-100">
+    <div className="h-screen flex flex-col bg-gray-100 dark:bg-gray-950 transition-colors duration-200">
       <Navbar />
       {loading && (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center h-screen transition-colors duration-200">
           <Loader />
         </div>
       )}
       {!loading && (
         <>
-          <div className="w-full max-w-7xl mx-auto flex justify-between items-center py-6 px-8 bg-white shadow-lg rounded-md border border-gray-300">
-            <div className="text-gray-800 text-xl min-[400px]:text-2xl font-bold">
+          <div className="w-full max-w-7xl mx-auto flex justify-between items-center py-6 px-8 bg-white dark:bg-gray-900 shadow-lg rounded-md border border-gray-300 dark:border-gray-700 transition-colors duration-200">
+            <div className="text-gray-800 dark:text-white text-xl min-[400px]:text-2xl font-bold transition-colors duration-200">
               <h1>Hey, {name}</h1>
             </div>
             <button
@@ -194,7 +196,7 @@ const Dashboard = () => {
               <p className="hidden sm:block">Add Quiz</p>
             </button>
           </div>
-          <hr className="my-4 mx-auto w-full max-w-7xl border-gray-300" />
+          <hr className="my-4 mx-auto w-full max-w-7xl border-gray-300 dark:border-gray-700" />
           <div className="p-6 flex flex-wrap gap-6 max-w-7xl mx-auto overflow-auto w-full">
             {quizzes.length === 0 && (
               <div className="w-full flex flex-col items-center gap-4">
@@ -203,7 +205,7 @@ const Dashboard = () => {
                   alt="No Quiz"
                   className="w-[40%]"
                 />
-                <h1 className="text-xl font-bold text-gray-700">
+                <h1 className="text-xl font-bold text-gray-700 dark:text-gray-300">
                   No Quiz to display...!
                 </h1>
                 <button
@@ -217,9 +219,9 @@ const Dashboard = () => {
             {quizzes.map((item, index) => (
               <div
                 key={item._id}
-                className="bg-white rounded-lg shadow-md w-full border border-gray-200 hover:shadow-xl transition-shadow duration-300"
+                className="bg-white dark:bg-gray-900 rounded-lg shadow-md w-full border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300"
               >
-                <p className="font-semibold text-lg flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50">
+                <p className="font-semibold text-lg flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
                   Test Code: {item.code}
                 </p>
                 <div className="p-4">
@@ -227,12 +229,12 @@ const Dashboard = () => {
                     onClick={() => handleNavigation(item.code)}
                     className="mb-4"
                   >
-                    <h1 className="text-xl font-semibold">
+                    <h1 className="text-xl font-semibold dark:text-white">
                       {item.quizTitle.length > 20
                         ? item.quizTitle.substring(0, 20) + "..."
                         : item.quizTitle}
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 dark:text-gray-400">
                       {item.quizDescription.length > 60
                         ? item.quizDescription.substring(0, 60) + "..."
                         : item.quizDescription}
@@ -290,7 +292,7 @@ const Dashboard = () => {
       {createQuiz && (
         <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
           <form
-            className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
+            className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md dark:bg-gray-800 dark:text-white"
             onSubmit={handleSubmit}
           >
             <h1 className="text-2xl font-bold mb-6">Test Information</h1>
@@ -301,7 +303,7 @@ const Dashboard = () => {
                   <input
                     onChange={(e) => setQuizTitle(e.target.value)}
                     value={quizTitle}
-                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     type="text"
                     required
                     placeholder="Add Title..."
@@ -314,7 +316,7 @@ const Dashboard = () => {
                   <textarea
                     onChange={(e) => setQuizDescription(e.target.value)}
                     value={quizDescription}
-                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     cols="30"
                     placeholder="Add Description..."
                     rows="4"
@@ -327,7 +329,7 @@ const Dashboard = () => {
                   <input
                     onChange={(e) => setQuestionTime(e.target.value)}
                     value={questionTime}
-                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     type="number"
                     min="1"
                     required
@@ -341,20 +343,20 @@ const Dashboard = () => {
                   <input
                     onChange={(e) => setCode(e.target.value)}
                     value={code}
-                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     type="text"
                     required
                     placeholder="Unique code"
                   />
                 </label>
                 {isCodeNew && (
-                  <p className="text-red-600 font-semibold mt-2">
+                  <p className="text-red-600 dark:text-red-400 font-semibold mt-2">
                     Code already in use
                   </p>
                 )}
               </div>
               {error && (
-                <p className="text-red-600 font-semibold mt-2">
+                <p className="text-red-600 dark:text-red-400 font-semibold mt-2">
                   Please fill all the required fields.
                 </p>
               )}
@@ -362,8 +364,10 @@ const Dashboard = () => {
             <div className="flex gap-4 mt-6">
               <button
                 type="button"
-                onClick={() => setCreateQuiz(false)}
-                className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors duration-200"
+                onClick={() => {
+                  setCreateQuiz(false), setIsCodeNew(false);
+                }}
+                className="bg-gray-300 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors duration-200"
               >
                 Close
               </button>

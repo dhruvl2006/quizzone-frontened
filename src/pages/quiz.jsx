@@ -50,7 +50,7 @@ const Quiz = () => {
   }, [id]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-950 transition-colors duration-200">
       <Navbar />
       <div className="flex flex-col items-center w-full max-w-6xl mx-auto min-[500px]:p-6">
         {loading && (
@@ -64,19 +64,21 @@ const Quiz = () => {
           </div>
         )}
         {quizDetails && !loading && !error && (
-          <div className="bg-white rounded-lg shadow-md p-3 min-[500px]:p-6 w-full">
+          <div className="bg-white rounded-lg shadow-md p-3 min-[500px]:p-6 w-full dark:bg-gray-900 dark:text-white">
             <h1 className="text-2xl font-bold mb-4">{quizTitle}</h1>
-            <p className="text-lg text-gray-700 mb-2">{quizDescription}</p>
+            <p className="text-lg text-gray-700 dark:text-gray-200 mb-2">
+              {quizDescription}
+            </p>
             <div className="sm:flex sm:justify-between mb-4">
-              <p className="text-md text-gray-600">
+              <p className="text-md text-gray-600 dark:text-gray-300">
                 Time allotted per Question:{" "}
                 <span className="font-semibold">{questionTime} sec</span>
               </p>
-              <p className="text-md text-gray-600">
+              <p className="text-md text-gray-600 dark:text-gray-300">
                 Test Code: <span className="font-semibold">{code}</span>
               </p>
             </div>
-            <hr className="w-full h-1 bg-gray-300 my-4" />
+            <hr className="w-full h-1 bg-gray-300 dark:bg-gray-700 my-4" />
             <SCQ code={id} />
           </div>
         )}

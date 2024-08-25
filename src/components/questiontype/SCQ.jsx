@@ -255,13 +255,13 @@ const SCQ = ({ code }) => {
   };
 
   return (
-    <div className="w-full sm:p-6 bg-gray-50">
-      <h1 className="text-lg sm:text-3xl font-bold mb-6 text-gray-800">
+    <div className="w-full sm:p-6 bg-gray-50 dark:bg-gray-900">
+      <h1 className="text-lg sm:text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
         Number of Questions: {questions.length}
       </h1>
-      <form className="bg-white shadow-lg rounded-lg p-3 min-[500px]:p-6 mb-8">
+      <form className="bg-white shadow-lg rounded-lg p-3 min-[500px]:p-6 mb-8 dark:bg-gray-800">
         <div className="mb-5">
-          <label className="block text-gray-700 text-sm font-semibold mb-2">
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">
             Question:
           </label>
           <input
@@ -269,32 +269,32 @@ const SCQ = ({ code }) => {
               setQuestion({ ...question, question: e.target.value })
             }
             value={question.question}
-            className="appearance-none border border-gray-300 rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="appearance-none border border-gray-300 dark:bg-gray-700 dark:border-gray-700 rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             type="text"
             placeholder="Enter question here"
             required
           />
           {questionError && (
-            <p className="text-sm text-red-600 font-semibold mt-2">
+            <p className="text-sm text-red-600 dark:text-red-400 font-semibold mt-2">
               Question can't be empty
             </p>
           )}
         </div>
         {options.map((option, index) => (
           <div key={index} className={`mb-4`}>
-            <label className="block text-gray-700 text-sm font-semibold mb-2">
+            <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">
               Option {index + 1}:
             </label>
             <div className="flex items-center">
               <input
-                className="mr-3 leading-tight focus:ring-indigo-500 focus:ring-2"
+                className="mr-3 leading-tight focus:ring-indigo-500 focus:ring-2 dark:bg-gray-700"
                 type="radio"
                 name="option"
                 checked={question.answer === index}
                 onChange={() => handleAnswerChange(index)}
               />
               <input
-                className="appearance-none border border-gray-300 rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="appearance-none border border-gray-300 dark:bg-gray-700 dark:border-gray-700 rounded w-full py-3 px-4 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder={`Option ${index + 1}`}
                 type="text"
                 value={option}
@@ -305,13 +305,13 @@ const SCQ = ({ code }) => {
           </div>
         ))}
         {oPtionError && (
-          <p className="text-sm text-red-600 font-semibold mt-2">
+          <p className="text-sm text-red-600 dark:text-red-400 font-semibold mt-2">
             Options should be greater than or equal to three
           </p>
         )}
 
         <div className="mb-5">
-          <label className="block text-gray-700 text-sm font-semibold mb-2">
+          <label className="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">
             Solution:
           </label>
           <textarea
@@ -319,7 +319,7 @@ const SCQ = ({ code }) => {
               setQuestion({ ...question, solution: e.target.value })
             }
             value={question.solution}
-            className="appearance-none border border-gray-300 rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="appearance-none border border-gray-300 dark:border-gray-700 rounded w-full py-3 px-4 dark:bg-gray-700 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             placeholder="Enter solution or explanation here"
           />
         </div>
@@ -328,20 +328,20 @@ const SCQ = ({ code }) => {
           <button
             type="button"
             onClick={addOption}
-            className="bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 w-full sm:w-fit"
+            className="bg-orange-400 dark:bg-orange-500 dark:hover:bg-orange-400 transition-colors duration-200 hover:bg-orange-500 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 w-full sm:w-fit"
           >
             Add Option
           </button>
           <button
             onClick={addQuestion}
-            className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-fit"
+            className="bg-indigo-500 dark:bg-indigo-600 dark:hover:bg-indigo-500 transition-colors duration-200 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-fit"
           >
             {isEditing ? "Update Question" : "Add Question"}
           </button>
         </div>
       </form>
 
-      <div className="w-full border-b-2 border-gray-300 mb-5 flex">
+      <div className="w-full border-b-2 border-gray-300 dark:border-gray-700 mb-5 flex">
         <button
           onClick={() => {
             setIsQuestions(true);
@@ -349,8 +349,8 @@ const SCQ = ({ code }) => {
           }}
           className={`w-1/2 py-2 text-center ${
             isQuestions
-              ? "border-b-4 border-indigo-600 font-bold text-indigo-700"
-              : "text-gray-800"
+              ? "border-b-4 border-indigo-600 dark:border-indigo-400 dark:text-indigo-300 font-bold text-indigo-700"
+              : "text-gray-800 dark:text-gray-200"
           } focus:outline-none`}
         >
           Questions
@@ -362,8 +362,8 @@ const SCQ = ({ code }) => {
           }}
           className={`w-1/2 py-2 text-center ${
             isParticipants
-              ? "border-b-4 border-indigo-600 font-bold text-indigo-700"
-              : "text-gray-800"
+              ? "border-b-4 border-indigo-600 dark:border-indigo-400 dark:text-indigo-300 font-bold text-indigo-700"
+              : "text-gray-800 dark:text-gray-200"
           } focus:outline-none`}
         >
           Participants
