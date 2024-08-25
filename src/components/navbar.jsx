@@ -69,20 +69,6 @@ const Navbar = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  className="flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
-                  to="/help"
-                  onClick={toggleMenu}
-                >
-                  <img
-                    className="w-6 h-6 dark:invert"
-                    src="../assets/howtouse.svg"
-                    alt="How to use"
-                  />
-                  How to use
-                </NavLink>
-              </li>
-              <li>
                 <div className="min-[1050px]:flex text-gray-800 dark:text-gray-200 flex items-center gap-3 sm:pt-0 pt-5">
                   <div className="flex gap-2 items-center hover:opacity-80 duration-200 cursor-pointer">
                     <img
