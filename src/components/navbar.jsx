@@ -25,7 +25,7 @@ const Navbar = () => {
     <div className="sticky top-0 w-full bg-white dark:bg-gray-900 shadow-md border-b border-gray-200 dark:border-gray-700 z-50 transition-colors duration-200">
       <nav className="flex flex-col min-[1050px]:flex-row w-full max-w-screen-xl mx-auto px-6 py-4 items-center justify-between">
         <div className="flex items-center justify-between w-full min-[1050px]:w-auto mb-4 min-[1050px]:mb-0">
-          <NavLink className="flex items-center gap-2" to="">
+          <NavLink className="flex items-center gap-2" to="/dashboard">
             <h1 className="text-gray-800 dark:text-white sm:text-2xl font-bold tracking-tight text-xl">
               Welcome to{" "}
               <span className="text-indigo-600 dark:text-indigo-400">
