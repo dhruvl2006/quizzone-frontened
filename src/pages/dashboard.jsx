@@ -134,7 +134,7 @@ const Dashboard = () => {
     });
 
     const data = await response.json();
-    if (data.status === "code already in use") {
+    if (data.status === "Code already in use for a quiz") {
       setIsCodeNew(true);
     }
     if (data.message === "Quiz added successfully") {
